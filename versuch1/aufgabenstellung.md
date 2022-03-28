@@ -54,3 +54,38 @@ Hilfreich ist auch:
 ```bash
 tail -f /var/log/mail.log
 ```
+
+## Aufgabe 1 ##
+
+Anfang an beginnt mit  Datum , das E-Mail geschiekt wird 
+ Subject : ist der Head von E-Mail 
+
+Content-Type: multipart/mixed:  Beim Erstellen von E-Mail-Nachrichten sollte es  den Inhaltstyp auf multipart/mixed gesetzt wird, wenn in  der E-Mail  TEXT und Anhänge senden wird
+
+
+Content-Type: multipart/alternative : Beim Erstellen von E-Mail-Nachrichten sollte es  den Inhaltstyp auf multipart/alternative setzen, wenn es HTML und TEXT senden wird
+
+--000000000000c3cfe2058538473b : 
+
+Es ist die Adresse ,die für Content-type: multipart/mixed ist 
+
+
+--000000000000c3cfdd0585384739 :
+
+ Das ist die Adresse für Content-type: multipart/ alternative ist
+
+
+Content-Type: text/plain : 
+
+Dokumente vom Typ text, wie text/html, text/plain, können bei der Übertragung per HTTP einen charset-Parameter im HTTP-Header senden, um die Zeichencodierung des Dokuments anzugeben. 
+
+Content-Transfer-Encoding:
+
+ quoted-printable  Beim Encoding als "quoted-printable" wird nach 72 Zeichen ein Umbruch (codiert durch "=") eingefügt.
+
+Content-Disposition:
+
+In einer normalen HTTP-Antwort ist der Content-Disposition-Antwortheader ein Header, der angibt, ob der Inhalt inline im Browser angezeigt werden soll, d. h. als Webseite oder als Teil einer Webseite oder als Anhang heruntergeladen und lokal gespeichert
+
+
+Content-Transfer-Encoding: base64 : für das Foto decodieren 
