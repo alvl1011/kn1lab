@@ -58,8 +58,8 @@ public class Send_Mail {
 			msg.setSentDate(new Date());
 			msg.setFrom(new InternetAddress("sent@localhost"));
 			msg.setRecipient(Message.RecipientType.TO, new InternetAddress("labrat@localhost"));
-			msg.setText("First mail text");
-			
+			msg.setText("Test mail text");
+			Transport.send(msg);		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
