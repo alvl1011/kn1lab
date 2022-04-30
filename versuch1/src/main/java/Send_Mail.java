@@ -17,7 +17,7 @@ public class Send_Mail {
 	public static void main(String[] args) {
 		
 		sendMail(SessionUtils.launchSession(
-				SessionUtils.setPropertiesForSMTPSession("localhost", "2526")),
+				SessionUtils.setPropertiesForSMTPSession("localhost", "2525")),
 				"Test subject",
 				"vladi@localhost",
 				"labrat@localhost",

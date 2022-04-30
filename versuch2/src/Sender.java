@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.time.Duration;
+import java.util.Scanner;
 import java.util.concurrent.*;
 
 /**
@@ -30,31 +31,93 @@ public class Sender {
      * @throws IOException Wird geworfen falls Sockets nicht erzeugt werden können.
      */
     private void send() throws IOException {
-/*   	//Text einlesen und in Worte zerlegen
-
+   	//Text einlesen und in Worte zerlegen
+    	
+    	Scanner sc = new Scanner(System.in);
+    	
         // Socket erzeugen auf Port 9998 und Timeout auf eine Sekunde setzen
-
-        // Iteration über den Konsolentext
+    	DatagramSocket client = new DatagramSocket(9998);
+    	client.setSoTimeout(1000);
+    	
+    	// Iteration �ber den Konsolentext
         while (true) {
         	// Paket an Port 9997 senden
         	
-            try {
-                // Auf ACK warten und erst dann Schleifenzähler inkrementieren
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SocketTimeoutException e) {
-            	System.out.println("Receive timed out, retrying...");
-            }
+        	String input = sc.nextLine() + " EOT";
+        	
+        	if (input.equals("quit EOT")) {
+        		System.out.println("Programm is closing...");
+        		break;
+        	}
+        	
+        	packetsToSend(client, "localhost", 9997, () -> input.split(" "));
         }
         
         // Wenn alle Packete versendet und von der Gegenseite bestätigt sind, Programm beenden
-        clientSocket.close();
+        sc.close();
+        client.close();
         
         if(System.getProperty("os.name").equals("Linux")) {
-            clientSocket.disconnect();
+            client.disconnect();
         }
-*/
+
         System.exit(0);
     }
+
+    
+    private void packetsToSend(DatagramSocket socket, String hostName, int port, Callable<String[]> function) {
+    	
+    	try {
+    		
+    		if (socket.isClosed()) {
+    			 System.out.println("Socket is not active.");
+    			 System.exit(0);
+    		}
+    		
+    		ExecutorService executorService = Executors.newSingleThreadExecutor();
+        	Future<String[]> future = executorService.submit(function);
+        	
+        	String[] resultArray = future.get();
+        	
+        	 int i = 0;
+             int j = 0;
+             while (j != resultArray.length) {
+            	 
+                 Packet packetPayload = new Packet(i, i, false, resultArray[j].getBytes());
+             
+                 ByteArrayOutputStream b = new ByteArrayOutputStream();
+                 ObjectOutputStream o = new ObjectOutputStream(b);
+                 o.writeObject(packetPayload);
+                 byte[] bufSend = b.toByteArray();
+             
+                 DatagramPacket packetSend = new DatagramPacket(bufSend, bufSend.length, InetAddress.getByName(hostName), port);
+                 socket.send(packetSend);
+             
+                 try {
+                	 
+                     byte[] bufRec = new byte[256]; 
+                     DatagramPacket packetAcked = new DatagramPacket(bufRec, bufRec.length);
+                     socket.receive(packetAcked);
+                 
+                     ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(packetAcked.getData()));
+                     Packet packetIn = (Packet) is.readObject();
+                 
+                     if (packetIn.isAckFlag() && packetIn.getAckNum() != i + resultArray[j].length()) {
+                         continue; 
+                     }
+                 
+                     i += resultArray[j].length();
+                     j++;
+                 } catch (ClassNotFoundException e) {
+                     e.printStackTrace();
+                 } catch (SocketTimeoutException e) {
+                     System.out.println("Receive timed out, retrying...");
+                 }
+             }
+    		
+    	} catch(IOException | InterruptedException | ExecutionException e) {
+    		 System.err.println("Problem with packet execution.");
+    		 e.printStackTrace();
+    	}
+	}
 }
