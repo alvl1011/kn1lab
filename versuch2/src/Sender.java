@@ -16,6 +16,7 @@ public class Sender {
      * @param args Argumente, werden nicht verwendet.
      */
     public static void main(String[] args) {
+    	System.out.println("Start...\n");
         Sender sender = new Sender();
         try {
             sender.send();
