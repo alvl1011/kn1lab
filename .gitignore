@@ -184,3 +184,4 @@ Temporary Items
 # Sonarlint plugin
 
 # End of https://www.gitignore.io/api/linux,macos,pycharm+all,intellij+all
+/.metadata/
