@@ -46,7 +46,7 @@ public class Sender {
         	
         	String input = sc.nextLine() + " EOT";
         	
-        	if (input.equals("quit EOT")) {
+        	if (input.equals("quit EOT") || input.equals("quit")) {
         		System.out.println("Programm is closing...");
         		break;
         	}
